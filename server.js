@@ -14,6 +14,8 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 //routes
+app.use('/api/v1', require('./routes/bookRoutes'));
+
 app.get('/test', (req, res) => {
     res.status(200).send('<h1>Library Management System API</h1>')
 })
