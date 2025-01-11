@@ -1,19 +1,34 @@
-const express = require('express')
+const express = require('express');
+const morgan = require('morgan');
+const dotenv = require('dotenv');
+const mySqlPool = require('./config/db');
+
+//configure dotenv
+dotenv.config();
 
 //rest object
 const app = express();
 
 //middlewares
+app.use(express.json());
+app.use(morgan('dev'));
 
 //routes
-app.get('/test', (req,res) => {
+app.get('/test', (req, res) => {
     res.status(200).send('<h1>Library Management System API</h1>')
 })
 
 //port
-const PORT = 8080
+const PORT = process.env.PORT || 8000;
 
-//listen
-app.listen(PORT,() => {
-    console.log("Server Running")
+//conditionally listen
+mySqlPool.query('SELECT 1').then(() => {
+    //My SQL
+    console.log('MySQL DB Connected');
+    //listen
+    app.listen(PORT, () => {
+        console.log(`Server Running on port ${process.env.PORT}`)
+    })
+}).catch((error) => {
+    console.log(error)
 })
