@@ -88,4 +88,61 @@ const createBook = async (req,res) => {
     }
 };
 
-module.exports = { getBooks, getBookByID, createBook };
+//UPDATE BOOK || PUT
+const updateBook = async (req,res) => {
+    try {
+        const bookId = req.params.id
+        if(!bookId){
+            return res.status(404).send({
+                success:false,
+                message:"Invalid ID or provide ID"
+            })
+        }
+        const {id,isbn,title,author,subject,publication_year,copies_available} = req.body
+        const data = await db.query(`UPDATE Books SET isbn=?, title=?, author=?, subject=?, publication_year=?, copies_available=? WHERE id=?`,[isbn,title,author,subject,publication_year,copies_available,id])
+        if(!data){
+            return res.status(500).send({
+                success: false,
+                message:"Error in Update Data"
+            })
+        }
+        res.status(200).send({
+            success:true,
+            message:"Book details updated"
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success:false,
+            message:"Error in Update Book API",
+            error
+        })
+    }
+}
+
+//DELETE BOOK || DELETE
+const deleteBook = async (req,res) => {
+    try {
+        const bookId = req.params.id
+        if(!bookId){
+            return res.status(404).send({
+                success:false,
+                message:"Please provide Book ID or valid Book ID"
+            })
+        }
+        await db.query(`DELETE FROM Books WHERE id=?`,[bookId])
+        res.status(200).send({
+            success: true,
+            message:"Book Deleted Successfully"
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            success:false,
+            message:'Error In Delete Book API',
+            error
+        })
+    }
+};
+
+module.exports = { getBooks, getBookByID, createBook, updateBook, deleteBook };
