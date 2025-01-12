@@ -13,7 +13,6 @@ const getPayments = async (req,res) => {
         res.status(200).send({
             success:true,
             message:"All Payents",
-            totalPayments: data[0].length,
             data: data[0]
         })
     }catch(error){

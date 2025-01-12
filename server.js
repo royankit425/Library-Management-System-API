@@ -17,6 +17,7 @@ app.use(morgan('dev'));
 app.use('/api/v1', require('./routes/bookRoutes'));
 app.use('/api/v1', require('./routes/userRoutes'));
 app.use('/api/v1', require('./routes/paymentRoutes'));
+app.use('/api/v1', require('./routes/recordRoutes'));
 
 app.get('/test', (req, res) => {
     res.status(200).send('<h1>Library Management System API</h1>')

@@ -1,9 +1,9 @@
 const db = require("../config/db");
 
-// GET ALL USERS LIST
-const getUsers = async (req,res) => {
+// GET ALL RECORDS LIST
+const getRecords = async (req,res) => {
     try{
-        const data = await db.query('SELECT * FROM Users')
+        const data = await db.query('SELECT * FROM Records')
         if(!data){
             return res.status(404).send({
                 success:false,
@@ -12,30 +12,30 @@ const getUsers = async (req,res) => {
         }
         res.status(200).send({
             success:true,
-            message:"All Users Records",
+            message:"All Records",
             data: data[0]
         })
     }catch(error){
         console.log(error)
         res.status(500).send({
             success:false,
-            message:"Error in Get All Users API",
+            message:"Error in Get All Records API",
             error
         })
     }
 };
 
-//GET USER BY ID
-const getUserByID = async (req,res) => {
+//GET RECORD BY ID
+const getRecordByID = async (req,res) => {
     try {
-        const userId = req.params.id
-        if(!userId){
+        const recordId = req.params.id
+        if(!recordId){
             return res.status(404).send({
                 success:false,
-                message:'Invalid or Provide User ID'
+                message:'Invalid or Provide Record ID'
             })
         }
-        const data = await db.query(` SELECT * FROM Users WHERE id=?`,[userId])
+        const data = await db.query(` SELECT * FROM Records WHERE id=?`,[recordId])
         if(!data){
             return res.status(404).send({
                 success:false,
@@ -44,29 +44,29 @@ const getUserByID = async (req,res) => {
         }
         res.status(200).send({
             success: true,
-            userDetails:data[0]
+            recordDetails:data[0]
         })
     } catch (error) {
         console.log(error)
         res.status(500).send({
             success:false,
-            message:"Error in Get User by ID API",
+            message:"Error in Get Record by ID API",
             error
         })
     }
 };
 
-//CREATE USER || POST
-const createUser = async (req,res) => {
+//CREATE RECORD || POST
+const createRecord = async (req,res) => {
     try {
-        const {id,name,email,password,role} = req.body
-        if(!id || !name || !email || !password || !role){
+        const {id,user_id,book_id,issue_date,return_date,status} = req.body
+        if(!id || !user_id || !book_id || !status){
             return res.status(500).send({
                 success:false,
-                message:"Please provide id, name, email, password and role"
+                message:"Please provide id, user_id, book_id and status"
             })
         }
-        const data = await db.query(` INSERT INTO Users (id,name,email,password,role,registration_date) VALUES (?,?,?,?,?,NOW())`,[id,name,email,password,role])
+        const data = await db.query(` INSERT INTO Records (id,user_id,book_id,issue_date,return_date,status) VALUES (?,?,?,?,?,?)`,[id,user_id,book_id,issue_date,return_date,status])
         if(!data){
             return res.status(404).send({
                 success:false,
@@ -75,30 +75,30 @@ const createUser = async (req,res) => {
         }
         res.status(201).send({
             success:true,
-            message:"New User Record Created"
+            message:"New Record Created"
         })
     } catch (error) {
         console.log(error)
         res.status(500).send({
             success:false,
-            message:"Error in Create User API",
+            message:"Error in Create Record API",
             error
         })
     }
 };
 
-//UPDATE USER || PUT
-const updateUser = async (req,res) => {
+//UPDATE RECORD || PUT
+const updateRecord = async (req,res) => {
     try {
-        const userId = req.params.id
-        if(!userId){
+        const recordId = req.params.id
+        if(!recordId){
             return res.status(404).send({
                 success:false,
                 message:"Invalid ID or provide ID"
             })
         }
-        const {id,name,email,password,role} = req.body
-        const data = await db.query(`UPDATE Users SET name=?, email=?, password=?, role=? WHERE id=?`,[name,email,password,role,id])
+        const {id,user_id,book_id,issue_date,return_date,status} = req.body
+        const data = await db.query(`UPDATE Records SET user_id=?, book_id=?, issue_date=?, return_date=?, status=? WHERE id=?`,[user_id,book_id,issue_date,return_date,status,id])
         if(!data){
             return res.status(500).send({
                 success: false,
@@ -107,41 +107,41 @@ const updateUser = async (req,res) => {
         }
         res.status(200).send({
             success:true,
-            message:"User details updated"
+            message:"Record details updated"
         })
     } catch (error) {
         console.log(error)
         res.status(500).send({
             success:false,
-            message:"Error in Update User API",
+            message:"Error in Update Record API",
             error
         })
     }
 }
 
-//DELETE USER || DELETE
-const deleteUser = async (req,res) => {
+//DELETE RECORD || DELETE
+const deleteRecord = async (req,res) => {
     try {
-        const userId = req.params.id
-        if(!userId){
+        const recordId = req.params.id
+        if(!recordId){
             return res.status(404).send({
                 success:false,
-                message:"Please provide User ID or valid User ID"
+                message:"Please provide Record ID or valid Record ID"
             })
         }
-        await db.query(`DELETE FROM Users WHERE id=?`,[userId])
+        await db.query(`DELETE FROM Records WHERE id=?`,[recordId])
         res.status(200).send({
             success: true,
-            message:"User Deleted Successfully"
+            message:"Record Deleted Successfully"
         })
     } catch (error) {
         console.log(error)
         res.status(500).send({
             success:false,
-            message:'Error In Delete User API',
+            message:'Error In Delete Record API',
             error
         })
     }
 };
 
-module.exports = { getUsers, getUserByID, createUser, updateUser, deleteUser };
+module.exports = { getRecords, getRecordByID, createRecord, updateRecord, deleteRecord };
