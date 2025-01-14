@@ -22,6 +22,7 @@ app.use('/api/v1', require('./routes/userRoutes'));
 app.use('/api/v1', require('./routes/paymentRoutes'));
 app.use('/api/v1', require('./routes/recordRoutes'));
 app.use('/api/v1',  require('./routes/authRoutes'));
+app.use('/api/v1',  require('./routes/statisticsRoutes'));
 
 app.get('/test', (req, res) => {
     res.status(200).send('<h1>Library Management System API</h1>')

@@ -9,8 +9,8 @@ const User = {
         const query = 'SELECT * FROM Users WHERE email = ?';
 
         try {
-            const [rows] = await db.query(query, [username]); // Use `db.query` with async/await
-            return rows.length > 0 ? rows[0] : null; // Return the first user or null if not found
+            const [rows] = await db.query(query, [username]);
+            return rows.length > 0 ? rows[0] : null;
         } catch (error) {
             throw new Error(`Error finding user by username: ${error.message}`);
         }
