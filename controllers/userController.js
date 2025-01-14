@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const bcrypt = require('bcryptjs');
 
 // GET ALL USERS LIST
 const getUsers = async (req,res) => {
@@ -57,33 +58,45 @@ const getUserByID = async (req,res) => {
 };
 
 //CREATE USER || POST
-const createUser = async (req,res) => {
+const createUser = async (req, res) => {
     try {
-        const {id,name,email,password,role} = req.body
-        if(!id || !name || !email || !password || !role){
+        const { id, name, email, password, role } = req.body;
+
+        // Validate required fields
+        if (!id || !name || !email || !password || !role) {
+            return res.status(400).send({
+                success: false,
+                message: "Please provide id, name, email, password, and role",
+            });
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Insert user into the database
+        const data = await db.query(
+            `INSERT INTO Users (id, name, email, password, role, registration_date) VALUES (?, ?, ?, ?, ?, NOW())`,
+            [id, name, email, hashedPassword, role]
+        );
+
+        if (!data) {
             return res.status(500).send({
-                success:false,
-                message:"Please provide id, name, email, password and role"
-            })
+                success: false,
+                message: "Error in INSERT QUERY",
+            });
         }
-        const data = await db.query(` INSERT INTO Users (id,name,email,password,role,registration_date) VALUES (?,?,?,?,?,NOW())`,[id,name,email,password,role])
-        if(!data){
-            return res.status(404).send({
-                success:false,
-                message:"Error in INSERT QUERY"
-            })
-        }
+
         res.status(201).send({
-            success:true,
-            message:"New User Record Created"
-        })
+            success: true,
+            message: "New User Record Created",
+        });
     } catch (error) {
-        console.log(error)
+        console.error(error);
         res.status(500).send({
-            success:false,
-            message:"Error in Create User API",
-            error
-        })
+            success: false,
+            message: "Error in Create User API",
+            error: error.message,
+        });
     }
 };
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
+// const bodyParser = require('body-parser');
 const mySqlPool = require('./config/db');
 
 //configure dotenv
@@ -12,12 +13,15 @@ const app = express();
 //middlewares
 app.use(express.json());
 app.use(morgan('dev'));
+// app.use(bodyParser.json());
+
 
 //routes
 app.use('/api/v1', require('./routes/bookRoutes'));
 app.use('/api/v1', require('./routes/userRoutes'));
 app.use('/api/v1', require('./routes/paymentRoutes'));
 app.use('/api/v1', require('./routes/recordRoutes'));
+app.use('/api/v1',  require('./routes/authRoutes'));
 
 app.get('/test', (req, res) => {
     res.status(200).send('<h1>Library Management System API</h1>')
