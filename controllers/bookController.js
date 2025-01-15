@@ -3,7 +3,37 @@ const db = require("../config/db");
 // GET ALL BOOKS LIST
 const getBooks = async (req,res) => {
     try{
-        const data = await db.query('SELECT * FROM Books')
+        const { search = {}, filter = {}, sort = {} } = req.body;
+
+        // WHERE clause for search and filter
+        const whereClauses = [];
+
+        // Search conditions
+        if (search.name) {
+            whereClauses.push(`title LIKE '%${search.name}%'`);
+        }
+
+        // Filter conditions
+        if (filter.subject) {
+            whereClauses.push(`subject = '${filter.subject}'`);
+        }
+
+        const whereQuery = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+
+        // ORDER BY clause for sorting
+        const orderClauses = [];
+        if (sort.name) {
+            orderClauses.push(`title ${sort.name.toUpperCase()}`);
+        }
+        if (sort.copies_available) {
+            orderClauses.push(`copies_available ${sort.copies_available.toUpperCase()}`);
+        }
+
+        const orderQuery = orderClauses.length > 0 ? `ORDER BY ${orderClauses.join(', ')}` : '';
+
+        // Final query
+        const query = `SELECT * FROM Books ${whereQuery} ${orderQuery}`;
+        const data = await db.query(query)
         if(!data){
             return res.status(404).send({
                 success:false,

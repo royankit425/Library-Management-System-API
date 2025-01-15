@@ -7,8 +7,8 @@ const router = express.Router();
 
 //routes
 
-//GET ALL BOOKS LIST || GET
-router.get('/books', authenticate, authorize('Librarian', 'Student', 'Faculty'), getBooks);
+//GET ALL BOOKS LIST (search, filter, sort) || POST
+router.post('/allBooks', authenticate, authorize('Librarian', 'Student', 'Faculty'), getBooks);
 
 //GET BOOK BY ID
 router.get('/books/:id', authenticate, authorize('Librarian', 'Student', 'Faculty'), getBookByID);

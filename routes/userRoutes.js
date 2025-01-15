@@ -7,8 +7,8 @@ const router = express.Router();
 
 //routes
 
-//GET ALL USERS LIST || GET
-router.get('/users', authenticate, authorize('Librarian', 'Student', 'Faculty'), getUsers);
+//GET ALL USERS LIST (search, filter, sort) || POST
+router.post('/allUsers', authenticate, authorize('Librarian', 'Student', 'Faculty'), getUsers);
 
 //GET USER BY ID
 router.get('/users/:id', authenticate, authorize('Librarian', 'Student', 'Faculty'), getUserByID);
